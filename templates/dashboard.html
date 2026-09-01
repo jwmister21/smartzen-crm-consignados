@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_subtitle %}Visão geral do seu CRM de consignados{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card"><span>Clientes</span><strong>{{ total_clients }}</strong><small>cadastrados</small></div>
+  <div class="stat-card"><span>Propostas</span><strong>{{ total_proposals }}</strong><small>total</small></div>
+  <div class="stat-card"><span>Aprovadas / Pagas</span><strong>{{ approved }}</strong><small>negócios positivos</small></div>
+  <div class="stat-card"><span>Pendentes</span><strong>{{ pending }}</strong><small>em andamento</small></div>
+</div>
+
+<div class="stats-grid one-line">
+  <div class="stat-card money"><span>Comissão paga</span><strong>R$ {{ '%.2f'|format(total_commission)|replace('.', ',') }}</strong><small>somente propostas com status Paga</small></div>
+</div>
+
+<section class="card">
+  <div class="card-head">
+    <div><h2>Propostas recentes</h2><p>Últimas movimentações cadastradas</p></div>
+    <a href="{{ url_for('proposals') }}">Ver todas</a>
+  </div>
+  {% if recent_proposals %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Cliente</th><th>Banco</th><th>Convênio</th><th>Proposta</th><th>Comissão</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for p in recent_proposals %}
+      <tr>
+        <td><strong>{{ p.client.name }}</strong><small>{{ p.client.phone or '' }}</small></td>
+        <td>{{ p.bank or '-' }}</td>
+        <td>{{ p.agreement or '-' }}</td>
+        <td>{{ p.proposal_number or '-' }}</td>
+        <td>R$ {{ '%.2f'|format(p.commission_value or 0)|replace('.', ',') }}</td>
+        <td><span class="status">{{ p.status }}</span></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty"><h3>Nenhuma proposta ainda</h3><p>Cadastre um cliente e depois inclua uma proposta.</p></div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Cliente: {{ client.name }} · {{ client.document or 'CPF não informado' }}{% endblock %}
+{% block content %}
+<form method="post" class="card form-card">
+<div class="section-title">Informações da proposta</div>
+<div class="form-grid">
+  <label>Operador
+    <input name="operator" value="{{ proposal.operator if proposal else session.get('username','') }}" placeholder="Nome do operador">
+  </label>
+  <label>Tipo de operação
+    <select name="operation_type"><option value="">Selecione</option>
+    {% for option in OPERATION_TYPES %}<option value="{{ option }}" {% if proposal and proposal.operation_type == option %}selected{% endif %}>{{ option }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Convênio
+    <input name="agreement" value="{{ proposal.agreement if proposal else '' }}" placeholder="Ex.: INSS, SIAPE, Prefeitura">
+  </label>
+  <label>Banco
+    <input name="bank" value="{{ proposal.bank if proposal else '' }}" placeholder="Nome do banco">
+  </label>
+  <label>Número da proposta
+    <input name="proposal_number" value="{{ proposal.proposal_number if proposal else '' }}">
+  </label>
+  <label>Data da proposta
+    <input type="date" name="proposal_date" value="{{ proposal.proposal_date.isoformat() if proposal and proposal.proposal_date else '' }}">
+  </label>
+  <label>Valor da comissão
+    <input name="commission_value" inputmode="decimal" value="{{ ('%.2f'|format(proposal.commission_value or 0)|replace('.', ',')) if proposal else '' }}" placeholder="0,00">
+  </label>
+  <label>Status
+    <select name="status">
+    {% for option in PROPOSAL_STATUS %}<option value="{{ option }}" {% if (proposal and proposal.status == option) or (not proposal and option == 'Digitada') %}selected{% endif %}>{{ option }}</option>{% endfor %}
+    </select>
+  </label>
+  <label class="span-2">Observações da proposta
+    <textarea name="notes" rows="5" placeholder="Margem, retorno, pendências, detalhes do contrato...">{{ proposal.notes if proposal else '' }}</textarea>
+  </label>
+</div>
+<div class="client-summary">
+  <strong>Dados vinculados automaticamente</strong>
+  <span>Nome do cliente: {{ client.name }}</span>
+  <span>Telefone: {{ client.phone or '-' }}</span>
+  <span>CPF/CNPJ: {{ client.document or '-' }}</span>
+</div>
+<div class="form-actions">
+  <a class="btn btn-light" href="{{ url_for('client_detail', client_id=client.id) }}">Cancelar</a>
+  {% if proposal %}
+  <button formaction="{{ url_for('delete_proposal', proposal_id=proposal.id) }}" formmethod="post" onclick="return confirm('Excluir esta proposta?')" class="btn btn-danger" type="submit">Excluir proposta</button>
+  {% endif %}
+  <button class="btn btn-primary" type="submit">Salvar proposta</button>
+</div>
+</form>
+{% endblock %}

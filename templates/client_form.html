@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block page_subtitle %}Dados pessoais e de contato{% endblock %}
+{% block content %}
+<form method="post" class="card form-card">
+<div class="form-grid">
+  <label class="span-2">Nome do cliente *
+    <input name="name" required value="{{ client.name if client else '' }}">
+  </label>
+  <label>Telefone do cliente
+    <input name="phone" value="{{ client.phone if client else '' }}" placeholder="(11) 99999-9999">
+  </label>
+  <label>CPF / CNPJ
+    <input name="document" value="{{ client.document if client else '' }}">
+  </label>
+  <label>E-mail
+    <input type="email" name="email" value="{{ client.email if client else '' }}">
+  </label>
+  <label>Cidade
+    <input name="city" value="{{ client.city if client else '' }}">
+  </label>
+  <label>Origem do cliente
+    <select name="source"><option value="">Selecione</option>
+    {% for option in SOURCE_OPTIONS %}<option value="{{ option }}" {% if client and client.source == option %}selected{% endif %}>{{ option }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Status do cliente
+    <select name="status">
+    {% for option in CLIENT_STATUS %}<option value="{{ option }}" {% if (client and client.status == option) or (not client and option == 'Novo') %}selected{% endif %}>{{ option }}</option>{% endfor %}
+    </select>
+  </label>
+  <label class="span-2">Observações
+    <textarea name="notes" rows="5">{{ client.notes if client else '' }}</textarea>
+  </label>
+</div>
+<div class="form-actions">
+  <a class="btn btn-light" href="{{ url_for('clients') }}">Cancelar</a>
+  <button class="btn btn-primary" type="submit">Salvar cliente</button>
+</div>
+</form>
+{% endblock %}

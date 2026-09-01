@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block page_title %}Clientes{% endblock %}
+{% block page_subtitle %}Cadastro de clientes para operações de consignado{% endblock %}
+{% block content %}
+<section class="card">
+<form class="filters" method="get">
+  <input name="q" value="{{ q }}" placeholder="Buscar nome, telefone, CPF/CNPJ, e-mail ou cidade">
+  <select name="status">
+    <option value="">Todos os status</option>
+    {% for option in CLIENT_STATUS %}
+    <option value="{{ option }}" {% if selected_status == option %}selected{% endif %}>{{ option }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn btn-dark" type="submit">Buscar</button>
+  <a class="btn btn-light" href="{{ url_for('clients') }}">Limpar</a>
+</form>
+
+{% if clients %}
+<div class="table-wrap">
+<table>
+<thead><tr><th>Cliente</th><th>Telefone</th><th>CPF/CNPJ</th><th>Status</th><th>Propostas</th><th>Ações</th></tr></thead>
+<tbody>
+{% for c in clients %}
+<tr>
+  <td><strong>{{ c.name }}</strong><small>{{ c.email or '' }}</small></td>
+  <td>{{ c.phone or '-' }}</td>
+  <td>{{ c.document or '-' }}</td>
+  <td><span class="status">{{ c.status }}</span></td>
+  <td>{{ c.proposals|length }}</td>
+  <td><div class="actions"><a href="{{ url_for('client_detail', client_id=c.id) }}">Abrir</a><a href="{{ url_for('edit_client', client_id=c.id) }}">Editar</a></div></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="empty"><h3>Nenhum cliente encontrado</h3></div>
+{% endif %}
+</section>
+{% endblock %}

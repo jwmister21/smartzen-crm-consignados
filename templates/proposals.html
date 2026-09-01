@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block page_title %}Propostas{% endblock %}
+{% block page_subtitle %}Controle geral das operações de consignado{% endblock %}
+{% block content %}
+<section class="card">
+<form class="filters" method="get">
+  <input name="q" value="{{ q }}" placeholder="Cliente, CPF, telefone, proposta, operador, banco ou convênio">
+  <select name="status"><option value="">Todos os status</option>
+  {% for option in PROPOSAL_STATUS %}<option value="{{ option }}" {% if selected_status == option %}selected{% endif %}>{{ option }}</option>{% endfor %}
+  </select>
+  <button class="btn btn-dark">Buscar</button>
+  <a class="btn btn-light" href="{{ url_for('proposals') }}">Limpar</a>
+</form>
+
+{% if proposals %}
+<div class="table-wrap">
+<table>
+<thead><tr><th>Operador</th><th>Cliente</th><th>Telefone</th><th>Convênio</th><th>Banco</th><th>CPF</th><th>Nº Proposta</th><th>Data</th><th>Comissão</th><th>Status</th></tr></thead>
+<tbody>
+{% for p in proposals %}
+<tr>
+  <td>{{ p.operator or '-' }}</td>
+  <td><a class="table-link" href="{{ url_for('client_detail', client_id=p.client.id) }}">{{ p.client.name }}</a></td>
+  <td>{{ p.client.phone or '-' }}</td>
+  <td>{{ p.agreement or '-' }}</td>
+  <td>{{ p.bank or '-' }}</td>
+  <td>{{ p.client.document or '-' }}</td>
+  <td><a class="table-link" href="{{ url_for('edit_proposal', proposal_id=p.id) }}">{{ p.proposal_number or '-' }}</a></td>
+  <td>{{ p.proposal_date.strftime('%d/%m/%Y') if p.proposal_date else '-' }}</td>
+  <td>R$ {{ '%.2f'|format(p.commission_value or 0)|replace('.', ',') }}</td>
+  <td><span class="status">{{ p.status }}</span></td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}<div class="empty"><h3>Nenhuma proposta encontrada</h3></div>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block page_title %}Página não encontrada{% endblock %}
+{% block page_subtitle %}O endereço informado não existe{% endblock %}
+{% block content %}
+<section class="card empty">
+  <h3>Erro 404</h3>
+  <p>Volte ao dashboard e continue usando o CRM.</p>
+  <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Ir para o dashboard</a>
+</section>
+{% endblock %}

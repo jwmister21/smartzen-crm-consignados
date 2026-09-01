@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login | SmartZen CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-body">
+  <div class="login-wrap">
+    <section class="login-panel">
+      <div class="login-logo">
+        <span class="brand-mark large">SZ</span>
+        <div><strong>SmartZen</strong><small>CRM de Consignados</small></div>
+      </div>
+      <h1>Bem-vindo</h1>
+      <p>Entre para acessar seus clientes, contatos e oportunidades.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" class="form-stack">
+        <label>Usuário
+          <input name="username" required autocomplete="username" placeholder="Seu usuário">
+        </label>
+        <label>Senha
+          <input name="password" type="password" required autocomplete="current-password" placeholder="Sua senha">
+        </label>
+        <button class="btn btn-primary btn-full" type="submit">Entrar no CRM</button>
+      </form>
+      <div class="login-hint">Acesso inicial: <b>admin</b> / <b>admin123</b></div>
+    </section>
+    <section class="login-art">
+      <span class="pill">SMARTZEN</span>
+      <h2>Consignados organizados.<br>Vendas mais simples.</h2>
+      <p>Cadastre clientes, propostas, bancos, convênios e comissões em poucos cliques.</p>
+      <div class="art-card">
+        <div><span>Clientes ativos</span><strong>CRM</strong></div>
+        <div class="mini-bars"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

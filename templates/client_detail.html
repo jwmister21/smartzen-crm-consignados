@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block page_title %}{{ client.name }}{% endblock %}
+{% block page_subtitle %}CPF/CNPJ: {{ client.document or 'não informado' }}{% endblock %}
+{% block content %}
+<div class="detail-grid">
+<section class="card">
+  <div class="client-profile">
+    <div class="avatar">{{ client.name[:1]|upper }}</div>
+    <div><h2>{{ client.name }}</h2><span class="status">{{ client.status }}</span></div>
+  </div>
+
+  <div class="info-grid">
+    <div><span>Telefone</span><strong>{{ client.phone or '-' }}</strong></div>
+    <div><span>CPF / CNPJ</span><strong>{{ client.document or '-' }}</strong></div>
+    <div><span>E-mail</span><strong>{{ client.email or '-' }}</strong></div>
+    <div><span>Cidade</span><strong>{{ client.city or '-' }}</strong></div>
+    <div><span>Origem</span><strong>{{ client.source or '-' }}</strong></div>
+    <div><span>Total de propostas</span><strong>{{ client.proposals|length }}</strong></div>
+  </div>
+
+  <div class="notes-box"><span>Observações do cliente</span><p>{{ client.notes or 'Nenhuma observação.' }}</p></div>
+</section>
+
+<aside class="card action-card">
+  <h3>Ações rápidas</h3>
+  <a class="btn btn-primary btn-full" href="{{ url_for('new_proposal', client_id=client.id) }}">+ Nova proposta</a>
+  <a class="btn btn-dark btn-full" href="{{ url_for('edit_client', client_id=client.id) }}">Editar cliente</a>
+  {% if client.phone %}
+  {% set phone_digits = client.phone|replace(' ','')|replace('(','')|replace(')','')|replace('-','')|replace('+','') %}
+  <a class="btn btn-whatsapp btn-full" target="_blank" href="https://wa.me/55{{ phone_digits }}">Abrir WhatsApp</a>
+  {% endif %}
+  <form method="post" action="{{ url_for('delete_client', client_id=client.id) }}" onsubmit="return confirm('Excluir o cliente e todas as propostas?')">
+    <button class="btn btn-danger btn-full">Excluir cliente</button>
+  </form>
+</aside>
+</div>
+
+<section class="card" style="margin-top:20px">
+  <div class="card-head"><div><h2>Propostas do cliente</h2><p>Histórico completo de consignados</p></div><a href="{{ url_for('new_proposal', client_id=client.id) }}">Nova proposta</a></div>
+  {% if client.proposals %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Operador</th><th>Operação</th><th>Convênio</th><th>Banco</th><th>Nº Proposta</th><th>Data</th><th>Comissão</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      {% for p in client.proposals %}
+      <tr>
+        <td>{{ p.operator or '-' }}</td>
+        <td>{{ p.operation_type or '-' }}</td>
+        <td>{{ p.agreement or '-' }}</td>
+        <td>{{ p.bank or '-' }}</td>
+        <td>{{ p.proposal_number or '-' }}</td>
+        <td>{{ p.proposal_date.strftime('%d/%m/%Y') if p.proposal_date else '-' }}</td>
+        <td>R$ {{ '%.2f'|format(p.commission_value or 0)|replace('.', ',') }}</td>
+        <td><span class="status">{{ p.status }}</span></td>
+        <td><a class="table-link" href="{{ url_for('edit_proposal', proposal_id=p.id) }}">Editar</a></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty"><h3>Sem propostas</h3><p>Cadastre a primeira operação deste cliente.</p><a class="btn btn-primary" href="{{ url_for('new_proposal', client_id=client.id) }}">Cadastrar proposta</a></div>
+  {% endif %}
+</section>
+{% endblock %}
