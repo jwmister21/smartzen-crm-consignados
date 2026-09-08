@@ -6,7 +6,7 @@
 <div class="section-title">Informações da proposta</div>
 <div class="form-grid">
   <label>Operador
-    <input name="operator" value="Milena Paixão" readonly>
+    <input name="operator" value="Escreva">
   </label>
   <label>Tipo de operação
     <select name="operation_type"><option value="">Selecione</option>
@@ -34,8 +34,14 @@
     </select>
   </label>
   <label class="span-2">Observações da proposta
-    <textarea name="notes" rows="5" placeholder="Margem, retorno, pendências, detalhes do contrato...">{{ proposal.notes if proposal else '' }}</textarea>
-  </label>
+
+  <div style="margin-bottom: 8px; font-weight: 700; font-size: 16px;">
+    Operador: <span style="font-weight: 800;">Milena Paixão</span>
+  </div>
+
+  <textarea name="notes" rows="5" placeholder="Margem, retorno, pendências, detalhes do contrato...">{{ proposal.notes if proposal else '' }}</textarea>
+
+ </label>
 </div>
 <div class="client-summary">
   <strong>Dados vinculados automaticamente</strong>
